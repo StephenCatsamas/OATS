@@ -1,0 +1,31 @@
+Hmm, I think there are some things I should outline for the direction of this language.
+
+My thinking is that everything will be an object built out of other objects or the primitive object, an int.
+
+I think the code will be cross complied into python, that seems to be the easiest way to implement this language.
+
+
+Syntax is going to be very pythonic, though I want static typing.
+
+Object Archetecture:
+
+Object:
+	Properties
+	Functions
+
+
+Syntactic Rules:
+
+Defining an Object:
+	
+
+type	#name{
+
+	#type1 #tname1	
+	#type2 #tname2	
+	
+	#type3 func #fname1 (#type #arg, #type #arg){
+	
+	}
+}	
+	

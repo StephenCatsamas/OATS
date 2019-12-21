@@ -1,0 +1,22 @@
+def type int{
+    
+   basic i = 0;
+   
+   func void set(basic a)
+   {
+   i = a;
+   }
+   
+   func void add(int a, int b)
+   {
+   i = a+b;
+   }
+
+   func basic toBas(void)
+   {
+   return i; 
+   }
+}
+
+
+

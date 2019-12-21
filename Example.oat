@@ -1,0 +1,25 @@
+type int{
+   prop{
+        basic i = 0;
+   }
+   
+   func{
+       void set(basic a)
+       {
+       i = a;
+       }
+       
+       void add(int a, int b)
+       {
+       i = a+b;
+       }
+
+       basic toBas(void)
+       {
+       return i; 
+       }
+   }
+}
+
+
+
