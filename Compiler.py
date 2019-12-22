@@ -35,57 +35,83 @@ class nodeAST:
         self.children.append(child)
 
 def printAST(AST):
-        lstOrd = printOdr(AST)
-        for node in lstOrd:
+        stk = printOdr(AST)
+        for node in stk:
             if node == AST:
                 doPrint(node)
             else:
                 printAST(node)
 
 def printOdr(node):
-    lstOrd = list()
+    stk = list()
     if node.type == "root":
         for child in node:
-            lstOrd.append(child)
-        return lstOrd
+            stk.append(child)
+        return stk
         
     if node.type == "op":
         if node.name == "set":
-            lstOrd.append(node[0])
-            lstOrd.append(node)
-            lstOrd.append(node[1])
-            return lstOrd
+            stk.append(node[0])
+            stk.append(node)
+            stk.append(node[1])
+            stk.append(nodeAST("synt", "\n"))
+            return stk
 
         if node.name == "in":
-            lstOrd.append(node[0])
-            lstOrd.append(node)
-            lstOrd.append(node[1])
-            return lstOrd
+            stk.append(node[0])
+            stk.append(node)
+            stk.append(node[1])
+            return stk
         
     if node.type == "ctrl":
         if node.name == "for":
-            lstOrd.append(node)
-            lstOrd.append(node[0])
-            lstOrd.append(nodeAST("synt", ":"))
-            lstOrd.append(node[1])
-            return lstOrd   
+            stk.append(node)
+            stk.append(node[0])
+            stk.append(nodeAST("synt", ": \n"))
+            stk.append(node[1])
+            return stk   
             
     if node.type == "func":
-        lstOrd.append(node)
-        lstOrd.append(nodeAST("synt", "("))
+        stk.append(node)
+        stk.append(nodeAST("synt", "("))
         for child in node:
-            lstOrd.append(child)
-            lstOrd.append(nodeAST("synt", ","))
-        lstOrd.pop()
-        lstOrd.append(nodeAST("synt", ")"))
-        return lstOrd  
+            stk.append(child)
+            stk.append(nodeAST("synt", ","))
+        stk.pop()
+        stk.append(nodeAST("synt", ")"))
+        return stk  
     
-    lstOrd.append(node)
-    return lstOrd
-
+    if node.type == "block":
+        stk.append(nodeAST("tab", "lvp"))
+        for child in node:
+            stk.append(nodeAST("tab", "do"))
+            stk.append(child)
+            stk.append(nodeAST("synt", "\n"))
+        stk.append(nodeAST("tab", "lvm"))    
+        return stk
+    
+    stk.append(node)
+    return stk
+    
+tab = 0
 def doPrint(node):
-    #print(node.type, node.name)
-    print(getPrint(node), end = "")
+    global tab
+    if node.type == "block":
+        return
+    if node.type == "tab":
+        if node.name == "lvp":
+            tab += 1
+        if node.name == "lvm":
+            tab -= 1
+        if node.name == "do":
+            for i in range(tab):
+                print("    ", end = "")
+        return
+        
+    if node.type == "synt":
+        print(getPrint(node), end = "")
+        return
+    print(getPrint(node), end = " ")
 
 def getPrint(node):
     if node.type == "op":
@@ -104,10 +130,7 @@ def getPrint(node):
         return node.name
     if node.type == "synt":
         return node.name
-        
-    
-        
-    return None
+
     
     
 root = nodeAST("root")
@@ -120,8 +143,11 @@ root[1].addChild("op", "in")
 root[1][0].addChild("var","i")
 root[1][0].addChild("func", "range")
 root[1][0][1].addChild("basic", "7")
-root[1].addChild("func", "print")
-root[1][1].addChild("var","i")
+root[1].addChild("block")
+root[1][1].addChild("func", "print")
+root[1][1][0].addChild("var","i")
+root[1][1].addChild("func", "print")
+root[1][1][1].addChild("var","i")
 
 root.printChildren()
 print("##########")
