@@ -2,9 +2,9 @@
 fp = "Example.oat"
 op = "comp.py"
 
-with open(fp, 'r') as srcf:
-    src = srcf.read()
-    print(src)
+# with open(fp, 'r') as srcf:
+    # src = srcf.read()
+    # print(src)
 
 class nodeAST:
     depth = 0
@@ -33,14 +33,59 @@ class nodeAST:
     def addChild(self,type,name = None):
         child = nodeAST(type,name)
         self.children.append(child)
-idx = 0
+
 def printAST(AST):
-    for child in AST:
-        text = getPrint(child,idx)
-        if text != None:
-            outlst.insert(text,idx)
-            idx += 1
-        printAST(child)
+        lstOrd = printOdr(AST)
+        for node in lstOrd:
+            if node == AST:
+                doPrint(node)
+            else:
+                printAST(node)
+
+def printOdr(node):
+    lstOrd = list()
+    if node.type == "root":
+        for child in node:
+            lstOrd.append(child)
+        return lstOrd
+        
+    if node.type == "op":
+        if node.name == "set":
+            lstOrd.append(node[0])
+            lstOrd.append(node)
+            lstOrd.append(node[1])
+            return lstOrd
+
+        if node.name == "in":
+            lstOrd.append(node[0])
+            lstOrd.append(node)
+            lstOrd.append(node[1])
+            return lstOrd
+        
+    if node.type == "ctrl":
+        if node.name == "for":
+            lstOrd.append(node)
+            lstOrd.append(node[0])
+            lstOrd.append(nodeAST("synt", ":"))
+            lstOrd.append(node[1])
+            return lstOrd   
+            
+    if node.type == "func":
+        lstOrd.append(node)
+        lstOrd.append(nodeAST("synt", "("))
+        for child in node:
+            lstOrd.append(child)
+            lstOrd.append(nodeAST("synt", ","))
+        lstOrd.pop()
+        lstOrd.append(nodeAST("synt", ")"))
+        return lstOrd  
+    
+    lstOrd.append(node)
+    return lstOrd
+
+def doPrint(node):
+    #print(node.type, node.name)
+    print(getPrint(node), end = "")
 
 def getPrint(node):
     if node.type == "op":
@@ -56,6 +101,8 @@ def getPrint(node):
         if node.name == "for":
             return node.name
     if node.type == "func":
+        return node.name
+    if node.type == "synt":
         return node.name
         
     
@@ -79,5 +126,4 @@ root[1][1].addChild("var","i")
 root.printChildren()
 print("##########")
 printAST(root)
-print(outlst)
     
