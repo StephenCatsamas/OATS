@@ -1,5 +1,4 @@
-i = 0
+def myfunc():
+    return 1,6,7,3)
 
-for i in range( 7 ) :
-    print( i )
-    print( i )
+print(myfunc())
