@@ -1,5 +1,7 @@
-#operator of form a op b
 op
+==
+operator of form a op b
+
     in          (in)
         child 0:    LHS block
         child 1:    RHS block
@@ -12,8 +14,10 @@ op
         child 0:    LHS block
         child 1:    RHS block
 
-#control structures
 crtl
+====
+control structures
+
     for         (for)
         child 0:    condition block
         child 1:    body block
@@ -33,23 +37,33 @@ crtl
     return      (return)
         child n:    argument block
 
-#functions with arguments
 func
+====
+functions with arguments
+
     @name       (@name)
         child n:    argument block
 
-#indented block
 block
+=====
+indented block
+
     child n:        code line
     
-#variable
 var
+===
+variable
+
     @name       (@name)
 
-#integer
 basic
+=====
+integer
+
     @number     (@number)
 
-#syntax strings
 synt
+====
+syntax strings
+
     @string     (@string)
