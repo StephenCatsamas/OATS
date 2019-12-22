@@ -7,6 +7,7 @@ op = "comp.py"
 #     print(src)
 
 class AST:
+    printDepth = 0
 
     def __getitem__(self, key):
         return self.leaves[key]
@@ -18,7 +19,7 @@ class AST:
         self.type = type
         self.name = name
         self.leaves = list()
-        self.printDepth = 0
+
 
     def printChildren(self):
         for leaf in self.leaves:
@@ -26,9 +27,9 @@ class AST:
                 print("  ", end="")
             print("--", leaf.type, leaf.name)
 
-            self.printDepth += 1
+            AST.printDepth += 1
             leaf.printChildren()
-            self.printDepth -= 1
+            AST.printDepth -= 1
 
     def addChild(self, type, name=None):
         leaf = AST(type, name)
@@ -52,8 +53,8 @@ class ASTinterpreter:
     def printStack(self, branch):
         stk = list()
         if branch.type == "root":
-            for node in branch:
-                stk.append(node)
+            for leaf in branch:
+                stk.append(leaf)
             return stk
 
         if branch.type == "op":
@@ -71,18 +72,30 @@ class ASTinterpreter:
                 return stk
 
         if branch.type == "ctrl":
-            if branch.name in ["for","if"]:
+            if branch.name in ["for","if","while"]:
                 stk.append(branch)
                 stk.append(branch[0])
                 stk.append(AST("synt", ": \n"))
                 stk.append(branch[1])
                 return stk
+            if branch.name == "return":
+                stk.append(branch)
+                stk.append(AST("synt", "("))
+                for leaf in branch:
+                    stk.append(leaf)
+                    stk.append(AST("synt", ","))
+                stk.pop()
+                stk.append(AST("synt", ")"))
+                return stk
+            if branch.name in ["break","continue"]:
+                stk.append(branch)
+                return stk
 
         if branch.type == "func":
             stk.append(branch)
             stk.append(AST("synt", "("))
-            for child in branch:
-                stk.append(child)
+            for leaf in branch:
+                stk.append(leaf)
                 stk.append(AST("synt", ","))
             stk.pop()
             stk.append(AST("synt", ")"))
@@ -90,9 +103,9 @@ class ASTinterpreter:
 
         if branch.type == "block":
             stk.append(AST("tab", "lvp"))
-            for child in branch:
+            for leaf in branch:
                 stk.append(AST("tab", "do"))
-                stk.append(child)
+                stk.append(leaf)
                 stk.append(AST("synt", "\n"))
             stk.append(AST("tab", "lvm"))
             return stk
@@ -132,14 +145,14 @@ class ASTinterpreter:
         if branch.type == "basic":
             return branch.name
         if branch.type == "ctrl":
-            if branch.name == "for":
-                return branch.name
-            if branch.name == "if":
+            if branch.name in ["for","if", "while", "return", "break", "continue"]:
                 return branch.name
         if branch.type == "func":
             return branch.name
         if branch.type == "synt":
             return branch.name
+
+        return branch.type,branch.name
 
 
 root = AST("root")
@@ -155,15 +168,19 @@ root[1][0][1].addChild("basic", "7")
 root[1].addChild("block")
 root[1][1].addChild("func", "print")
 root[1][1][0].addChild("var", "i")
-root[1][1].addChild("func", "print")
+root[1][1].addChild("ctrl", "return")
 root[1][1][1].addChild("var", "i")
-root.addChild("ctrl", "if")
+root[1][1][1].addChild("var", "j")
+root.addChild("ctrl", "while")
 root[2].addChild("op", "is")
 root[2][0].addChild("var", "i")
 root[2][0].addChild("basic", "7")
 root[2].addChild("block")
-root[2][1].addChild("func", "print")
+root[2][1].addChild("func", "myfunc")
 root[2][1][0].addChild("var", "i")
+root[2][1][0].addChild("var", "t")
+root[2][1][0].addChild("var", "j")
+root[2][1].addChild("ctrl", "break")
 
 root.printChildren()
 print("##########")
