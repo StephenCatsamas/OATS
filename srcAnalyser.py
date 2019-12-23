@@ -38,7 +38,7 @@ for i, char in enumerate(src):
 
 leaf = AST
 
-types = ["int", "string", "hsdfs", "void"]
+types = ["int", "string", "hsdfs", "void", "basic"]
 funcs = ["set"]
 
 for line in srcLines:
@@ -46,6 +46,13 @@ for line in srcLines:
     print(line)
 
 for line in srcLines:
+    print()
+    print("newline: ", end="")
+    print(line)
+    print()
+    print(leaf)
+    print()
+
     if line[0] == "type":
         leaf = leaf.add_child("def", "class")
         leaf.add_child("func", line[1])
@@ -74,18 +81,30 @@ for line in srcLines:
     if line[0] == "func":
         leaf = leaf.add_child("def", "classfunc")
 
-    if leaf.ascend().name == "classfunc":
+    if leaf.key == "func":
         if line[0] in types:
-            leaf = leaf.add_child("def", line[1])
-            leaf = leaf.ascend()
-
-    if leaf.ascend().key == "func":
-        if line[0] in "(":
-            leaf = leaf.add_child("def", line[1])
             leaf.add_child("var", line[1])
-            leaf.add_child("func", line[0])
-            leaf = leaf.ascend()
 
+    if leaf.name == "classfunc":
+        if line[0] in types:
+            leaf = leaf.add_child("def", "func")
+            leaf = leaf.add_child("func", line[1])
+
+    if leaf.key == "func":
+        if line[0] == "(":
+            pass
+        if line[0] == ")":
+            leaf = leaf.ascend()
+    try:
+        if line[1] == "=":
+            leaf = leaf.add_child("op", "set")
+            leaf.add_child("var", line[0])
+            leaf.add_child("var", line[2])
+            leaf = leaf.ascend()
+    except IndexError:
+        pass
+
+    AST.print_children()
 
 
 print()
