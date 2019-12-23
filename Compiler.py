@@ -1,11 +1,3 @@
-fp = "Example.oat"
-op = "comp.py"
-
-
-# with open(fp, 'r') as srcf:
-#     src = srcf.read()
-#     print(src)
-
 class AST:
     printDepth = 0
 
@@ -15,12 +7,14 @@ class AST:
     def __iter__(self):
         return iter(self.leaves)
 
-    def __init__(self, key, name=None):
+    def __init__(self, key, name=None, branch = None):
         self.key = key
         self.name = name
         self.leaves = list()
+        self.branch = branch
 
     def print_children(self):
+
         for leaf in self.leaves:
             for i in range(self.printDepth):
                 print("  ", end="")
@@ -30,9 +24,20 @@ class AST:
             leaf.print_children()
             AST.printDepth -= 1
 
+    def ascend(self, lv = 1):
+        if lv != 1:
+            for i in range(lv):
+                self.branch.ascend(lv - 1)
+        else:
+            return self.branch
+
+
     def add_child(self, key, name=None):
-        leaf = AST(key, name)
+        leaf = AST(key, name, self)
         self.leaves.append(leaf)
+
+    def give_branch(self):
+        return self.branch
 
 
 class ASTinterpreter:
