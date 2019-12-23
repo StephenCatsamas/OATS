@@ -1,13 +1,13 @@
-type int{
-    prop int i;
-    prop string j;
+type int {
+    prop int i
+    prop string j
 
-    func void set (basic a){
-        i = a;
+    func void set (basic a, basic b){
+        i = a
         }
     }
 }
 
-code
+code {text}
 
 
