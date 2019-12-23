@@ -1,4 +1,7 @@
-def myfunc():
-    return 1,6,7,3)
+class myclass():
+        def fuction(self):
+            print(6)
 
-print(myfunc())
+j = myclass()
+
+j.fuction()

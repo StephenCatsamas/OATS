@@ -15,24 +15,23 @@ class AST:
     def __iter__(self):
         return iter(self.leaves)
 
-    def __init__(self, type, name=None):
-        self.type = type
+    def __init__(self, key, name=None):
+        self.key = key
         self.name = name
         self.leaves = list()
 
-
-    def printChildren(self):
+    def print_children(self):
         for leaf in self.leaves:
             for i in range(self.printDepth):
                 print("  ", end="")
-            print("--", leaf.type, leaf.name)
+            print("--", leaf.key, leaf.name)
 
             AST.printDepth += 1
-            leaf.printChildren()
+            leaf.print_children()
             AST.printDepth -= 1
 
-    def addChild(self, type, name=None):
-        leaf = AST(type, name)
+    def add_child(self, key, name=None):
+        leaf = AST(key, name)
         self.leaves.append(leaf)
 
 
@@ -42,22 +41,36 @@ class ASTinterpreter:
         self.tab = 0
         self.AST = AST
 
-    def printAST(self, branch):
-        stk = self.printStack(branch)
+    def print_ast(self, branch):
+        stk = self.print_stack(branch)
         for leaf in stk:
             if leaf == branch:
-                self.doPrint(leaf)
+                self.do_print(leaf)
             else:
-                self.printAST(leaf)
+                self.print_ast(leaf)
 
-    def printStack(self, branch):
+    def print_stack(self, branch):
         stk = list()
-        if branch.type == "root":
+        if branch.key == "root":
             for leaf in branch:
                 stk.append(leaf)
             return stk
 
-        if branch.type == "op":
+        if branch.key == "def":
+            if branch.name == "func":
+                stk.append(AST("synt", "def "))
+                stk.append(branch[0])
+                stk.append(AST("synt", ": \n"))
+                stk.append(branch[1])
+                return stk
+            if branch.name == "class":
+                stk.append(AST("synt", "class "))
+                stk.append(branch[0])
+                stk.append(AST("synt", ": \n"))
+                stk.append(branch[1])
+                return stk
+
+        if branch.key == "op":
             if branch.name == "set":
                 stk.append(branch[0])
                 stk.append(branch)
@@ -71,8 +84,8 @@ class ASTinterpreter:
                 stk.append(branch[1])
                 return stk
 
-        if branch.type == "ctrl":
-            if branch.name in ["for","if","while"]:
+        if branch.key == "ctrl":
+            if branch.name in ["for", "if", "while"]:
                 stk.append(branch)
                 stk.append(branch[0])
                 stk.append(AST("synt", ": \n"))
@@ -87,11 +100,11 @@ class ASTinterpreter:
                 stk.pop()
                 stk.append(AST("synt", ")"))
                 return stk
-            if branch.name in ["break","continue"]:
+            if branch.name in ["break", "continue"]:
                 stk.append(branch)
                 return stk
 
-        if branch.type == "func":
+        if branch.key == "func":
             stk.append(branch)
             stk.append(AST("synt", "("))
             for leaf in branch:
@@ -101,7 +114,7 @@ class ASTinterpreter:
             stk.append(AST("synt", ")"))
             return stk
 
-        if branch.type == "block":
+        if branch.key == "block":
             stk.append(AST("tab", "lvp"))
             for leaf in branch:
                 stk.append(AST("tab", "do"))
@@ -113,11 +126,10 @@ class ASTinterpreter:
         stk.append(branch)
         return stk
 
-    def doPrint(self, branch):
-        self.tab
-        if branch.type == "block":
+    def do_print(self, branch):
+        if branch.key == "block":
             return
-        if branch.type == "tab":
+        if branch.key == "tab":
             if branch.name == "lvp":
                 self.tab += 1
             if branch.name == "lvm":
@@ -127,64 +139,71 @@ class ASTinterpreter:
                     print("    ", end="")
             return
 
-        if branch.type == "synt":
-            print(self.getPrint(branch), end="")
+        if branch.key == "synt":
+            print(self.get_print(branch), end="")
             return
-        print(self.getPrint(branch), end=" ")
+        print(self.get_print(branch), end=" ")
 
-    def getPrint(self, branch):
-        if branch.type == "op":
+    def get_print(self, branch):
+        if branch.key == "op":
             if branch.name == "set":
                 return "="
             if branch.name == "is":
                 return "=="
             if branch.name == "in":
                 return "in"
-        if branch.type == "var":
+        if branch.key == "var":
             return branch.name
-        if branch.type == "basic":
+        if branch.key == "basic":
             return branch.name
-        if branch.type == "ctrl":
-            if branch.name in ["for","if", "while", "return", "break", "continue"]:
+        if branch.key == "ctrl":
+            if branch.name in ["for", "if", "while", "return", "break", "continue"]:
                 return branch.name
-        if branch.type == "func":
+        if branch.key == "func":
             return branch.name
-        if branch.type == "synt":
+        if branch.key == "synt":
             return branch.name
 
-        return branch.type,branch.name
+        return branch.key, branch.name
 
 
 root = AST("root")
 
-root.addChild("op", "set")
-root[0].addChild("var", "i")
-root[0].addChild("basic", "0")
-root.addChild("ctrl", "for")
-root[1].addChild("op", "in")
-root[1][0].addChild("var", "i")
-root[1][0].addChild("func", "range")
-root[1][0][1].addChild("basic", "7")
-root[1].addChild("block")
-root[1][1].addChild("func", "print")
-root[1][1][0].addChild("var", "i")
-root[1][1].addChild("ctrl", "return")
-root[1][1][1].addChild("var", "i")
-root[1][1][1].addChild("var", "j")
-root.addChild("ctrl", "while")
-root[2].addChild("op", "is")
-root[2][0].addChild("var", "i")
-root[2][0].addChild("basic", "7")
-root[2].addChild("block")
-root[2][1].addChild("func", "myfunc")
-root[2][1][0].addChild("var", "i")
-root[2][1][0].addChild("var", "t")
-root[2][1][0].addChild("var", "j")
-root[2][1].addChild("ctrl", "break")
+root.add_child("op", "set")
+root[0].add_child("var", "i")
+root[0].add_child("basic", "0")
+root.add_child("ctrl", "for")
+root[1].add_child("op", "in")
+root[1][0].add_child("var", "i")
+root[1][0].add_child("func", "range")
+root[1][0][1].add_child("basic", "7")
+root[1].add_child("block")
+root[1][1].add_child("func", "print")
+root[1][1][0].add_child("var", "i")
+root[1][1].add_child("ctrl", "return")
+root[1][1][1].add_child("var", "i")
+root[1][1][1].add_child("var", "j")
+root.add_child("ctrl", "while")
+root[2].add_child("op", "is")
+root[2][0].add_child("var", "i")
+root[2][0].add_child("basic", "7")
+root[2].add_child("block")
+root[2][1].add_child("func", "myfunc")
+root[2][1][0].add_child("var", "i")
+root[2][1][0].add_child("var", "t")
+root[2][1][0].add_child("var", "j")
+root[2][1].add_child("ctrl", "break")
+root.add_child("def", "class")
+root[3].add_child("func", "thisfunc")
+root[3][0].add_child("var", "q")
+root[3][0].add_child("var", "b")
+root[3].add_child("block")
+root[3][1].add_child("var", "i")
+root[3][1].add_child("var", "t")
 
-root.printChildren()
+root.print_children()
 print("##########")
 
 itrp = ASTinterpreter(root)
 
-itrp.printAST(root)
+itrp.print_ast(root)

@@ -44,6 +44,18 @@ functions with arguments
     @name       (@name)
         child n:    argument block
 
+def
+===
+define classes and functions and other things
+    
+    func        (def)
+        child 0:    func.@name
+        child 1:    body block
+        
+    class        (class)
+        child 1:    func.@name
+        child 0:    body block
+
 block
 =====
 indented block
