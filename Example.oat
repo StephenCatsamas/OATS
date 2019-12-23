@@ -1,8 +1,12 @@
 type int {
-    prop int i
-    prop string j
+    prop{
+    int i
+    string j
+    }
 
-    func void set (basic a, basic b){
+    func{
+
+    void set (basic a, basic b){
         i = a
         }
     }

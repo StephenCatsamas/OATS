@@ -2,6 +2,6 @@ class myclass():
         def fuction(self):
             print(6)
 
-j = myclass()
+j = myclass ()
 
-j.fuction()
+j.fuction ()

@@ -14,6 +14,7 @@ class AST:
     def __init__(self, key, name=None, branch = None):
         self.key = key
         self.name = name
+
         self.leaves = list()
         self.branch = branch
 
@@ -28,10 +29,13 @@ class AST:
             AST.printDepth -= 1
 
     def ascend(self, lv = 1):
+        if self.branch == None:
+            return AST("None")
         if lv != 1:
             return self.branch.ascend(lv - 1)
         else:
             return self.branch
+
 
 
 
@@ -66,7 +70,17 @@ class ASTinterpreter:
             return stk
 
         if branch.key == "def":
+            if branch.name == "classfunc":
+                for leaf in branch:
+                    stk,append(lead)
+                return stk
             if branch.name == "func":
+                stk.append(AST("synt", "def "))
+                stk.append(branch[0])
+                stk.append(AST("synt", ": \n"))
+                stk.append(branch[1])
+                return stk
+            if branch.name == "prop":
                 stk.append(AST("synt", "def "))
                 stk.append(branch[0])
                 stk.append(AST("synt", ": \n"))
@@ -180,51 +194,51 @@ class ASTinterpreter:
         return branch.key, branch.name
 
 
-root = AST("root")
-
-leaf = root.add_child("op", "set")
-leaf.add_child("var", "i")
-leaf.add_child("basic", "0")
-leaf = leaf.ascend()
-leaf = leaf.add_child("ctrl", "for")
-leaf = leaf.add_child("op", "in")
-leaf.add_child("var", "i")
-leaf = leaf.add_child("func", "range")
-leaf.add_child("basic", "7")
-leaf = leaf.ascend(2)
-leaf = leaf.add_child("block")
-leaf = leaf.add_child("func", "print")
-leaf.add_child("var", "i")
-leaf = leaf.ascend()
-leaf = leaf.add_child("ctrl", "return")
-leaf.add_child("var", "i")
-leaf.add_child("var", "j")
-leaf = leaf.ascend(3)
-leaf = leaf.add_child("ctrl", "while")
-leaf = leaf.add_child("op", "is")
-leaf.add_child("var", "i")
-leaf.add_child("basic", "7")
-leaf = leaf.ascend()
-leaf = leaf.add_child("block")
-leaf = leaf.add_child("func", "myfunc")
-leaf.add_child("var", "i")
-leaf.add_child("var", "t")
-leaf.add_child("var", "j")
-leaf = leaf.ascend()
-leaf.add_child("ctrl", "break")
-leaf = leaf.ascend(2)
-leaf = leaf.add_child("def", "class")
-leaf.add_child("func", "thisfunc")
-leaf = leaf.add_child("block")
-leaf.add_child("var", "i")
-leaf.add_child("var", "t")
-
-
-print("------------")
-root.print_children()
-
-print("##########")
-
-itrp = ASTinterpreter(root)
-
-itrp.print_ast(root)
+# root = AST("root")
+#
+# leaf = root.add_child("op", "set")
+# leaf.add_child("var", "i")
+# leaf.add_child("basic", "0")
+# leaf = leaf.ascend()
+# leaf = leaf.add_child("ctrl", "for")
+# leaf = leaf.add_child("op", "in")
+# leaf.add_child("var", "i")
+# leaf = leaf.add_child("func", "range")
+# leaf.add_child("basic", "7")
+# leaf = leaf.ascend(2)
+# leaf = leaf.add_child("block")
+# leaf = leaf.add_child("func", "print")
+# leaf.add_child("var", "i")
+# leaf = leaf.ascend()
+# leaf = leaf.add_child("ctrl", "return")
+# leaf.add_child("var", "i")
+# leaf.add_child("var", "j")
+# leaf = leaf.ascend(3)
+# leaf = leaf.add_child("ctrl", "while")
+# leaf = leaf.add_child("op", "is")
+# leaf.add_child("var", "i")
+# leaf.add_child("basic", "7")
+# leaf = leaf.ascend()
+# leaf = leaf.add_child("block")
+# leaf = leaf.add_child("func", "myfunc")
+# leaf.add_child("var", "i")
+# leaf.add_child("var", "t")
+# leaf.add_child("var", "j")
+# leaf = leaf.ascend()
+# leaf.add_child("ctrl", "break")
+# leaf = leaf.ascend(2)
+# leaf = leaf.add_child("def", "class")
+# leaf.add_child("func", "thisfunc")
+# leaf = leaf.add_child("block")
+# leaf.add_child("var", "i")
+# leaf.add_child("var", "t")
+#
+#
+# print("------------")
+# root.print_children()
+#
+# print("##########")
+#
+# itrp = ASTinterpreter(root)
+#
+# itrp.print_ast(root)
