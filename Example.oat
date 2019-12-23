@@ -6,12 +6,11 @@ type int {
 
     func{
 
-    void set (basic a, basic b){
-        i = a
+    void make(basic a, basic b){
+        is(basic  a, basic b)
+
         }
     }
 }
 
 code {text}
-
-
