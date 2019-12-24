@@ -26,7 +26,7 @@ for i, char in enumerate(src):
 leaf = AST
 
 types = ["INT", "STRING", "VOID", "BASIC"]
-funcs = ["IS", "SET", "return"]
+funcs = ["IS", "SET", "return", "ADD", "SUB"]
 
 for line in srcLines:
     print("newline: ", end="")
@@ -41,6 +41,7 @@ for line in srcLines:
                 continue
 
         if line[0] == "TYPE":
+            types.append(line[1])
             leaf = leaf.add_child("def", "type")
             leaf.add_child("func", line[1])
             leaf = leaf.add_child("block")
@@ -49,7 +50,9 @@ for line in srcLines:
         if line[1] == "PROPS":
             if line[0] == "START":
                 leaf = leaf.add_child("def", "func")
-                leaf.add_child("func", "__init__")
+                leaf = leaf.add_child("func", "__init__")
+                leaf.add_child("var", "self")
+                leaf = leaf.ascend()
                 leaf = leaf.add_child("block")
                 continue
             if line[0] == "END":
@@ -86,6 +89,7 @@ for line in srcLines:
             if line[0] in types:
                 leaf = leaf.add_child("def", "func")
                 leaf = leaf.add_child("func", line[1])
+                leaf.add_child("var", "self")
                 continue
 
         if line[1] == "ARGS":
@@ -124,5 +128,5 @@ AST.print_children()
 print("##########")
 
 itrp = ASTtools.ASTinterpreter(AST)
-
+print("from builtIn import *")
 itrp.print_ast(AST)

@@ -1,51 +1,65 @@
-TYPE INT
+TYPE PAIR
 
     START PROPS
-        BASIC I
+        INT self.I
+        INT self.J
     END PROPS
 
     START FUNCS
 
-        BASIC ADD
+        PAIR MAKE
             START ARGS
-                BASIC A
-                BASIC B
+                INT A
+                INT B
             END ARGS
             START METHOD
                 FUNC SET
                 START ARGS
-                    VAR Q
-                    FUNC IS
-                        START ARGS
-                            VAR T
-                            VAR B
-                        END ARGS
+                    VAR self.I
+                    VAR A
                 END ARGS
-
-                START RETURN
-                    VAR Q
-                END RETURN
-            END METHOD
-
-        VOID AGAIN
-            START ARGS
-                BASIC A
-                BASIC B
-            END ARGS
-            START METHOD
                 FUNC SET
                 START ARGS
-                    VAR Q
-                    FUNC IS
+                    VAR self.J
+                    VAR B
+                END ARGS
+
+                START RETURN
+                VAR SELF
+                END RETURN
+           END METHOD
+
+        PAIR ADD
+            START ARGS
+                PAIR A
+                PAIR B
+            END ARGS
+            START METHOD
+
+                FUNC SET
+                START ARGS
+                    VAR self.I
+                    FUNC ADD
                         START ARGS
-                            VAR T
-                            VAR B
+                            VAR A.I
+                            VAR B.I
+                        END ARGS
+                END ARGS
+
+                FUNC SET
+                START ARGS
+                    VAR self.J
+                    FUNC ADD
+                        START ARGS
+                            VAR A.J
+                            VAR B.J
                         END ARGS
                 END ARGS
 
                 START RETURN
-                    VAR T
+                    VAR SELF
                 END RETURN
+
             END METHOD
 
 

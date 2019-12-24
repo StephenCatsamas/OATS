@@ -199,7 +199,7 @@ class ASTinterpreter:
                 print("    ", end="")
             self.newline = False
 
-        print(self.get_print(branch), end=" ")
+        print(self.get_print(branch).lower(), end=" ")
 
     def get_print(self, branch):
         if branch.key == "op":
