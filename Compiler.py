@@ -125,9 +125,9 @@ class ASTinterpreter:
                 return stk
 
         if branch.key == "func":
-            if branch.name == "is":
+            if branch.name == "IS":
                 branch.key = "op"
-            elif branch.name == "set":
+            elif branch.name == "SET":
                 branch.key = "op"
             else:
                 pop = False
@@ -152,14 +152,14 @@ class ASTinterpreter:
             return stk
 
         if branch.key == "op":
-            if branch.name == "set":
+            if branch.name == "SET":
                 stk.append(branch[0])
                 stk.append(branch)
                 stk.append(branch[1])
                 stk.append(AST("synt", "\n"))
                 return stk
 
-            if branch.name in ["in", "is"]:
+            if branch.name in ["IN", "IS"]:
                 stk.append(branch[0])
                 stk.append(branch)
                 stk.append(branch[1])
@@ -203,11 +203,11 @@ class ASTinterpreter:
 
     def get_print(self, branch):
         if branch.key == "op":
-            if branch.name == "set":
+            if branch.name == "SET":
                 return "="
-            if branch.name == "is":
+            if branch.name == "IS":
                 return "=="
-            if branch.name == "in":
+            if branch.name == "IN":
                 return "in"
         if branch.key == "var":
             return branch.name

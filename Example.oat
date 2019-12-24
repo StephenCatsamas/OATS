@@ -1,27 +1,30 @@
-TYPE TYPO
+TYPE INT
 
     START PROPS
-        INT I
-        STRING J
+        BASIC I
     END PROPS
 
     START FUNCS
 
-        VOID MAKE
+        BASIC ADD
             START ARGS
                 BASIC A
                 BASIC B
             END ARGS
             START METHOD
-                VOID SET
+                FUNC SET
                 START ARGS
-                    BASIC Q
-                    BASIC IS
+                    VAR Q
+                    FUNC IS
                         START ARGS
-                            BASIC T
-                            BASIC B
+                            VAR T
+                            VAR B
                         END ARGS
                 END ARGS
+
+                START RETURN
+                    VAR Q
+                END RETURN
             END METHOD
 
         VOID AGAIN
@@ -30,15 +33,19 @@ TYPE TYPO
                 BASIC B
             END ARGS
             START METHOD
-                VOID SET
+                FUNC SET
                 START ARGS
-                    BASIC Q
-                    BASIC IS
+                    VAR Q
+                    FUNC IS
                         START ARGS
-                            BASIC T
-                            BASIC B
+                            VAR T
+                            VAR B
                         END ARGS
                 END ARGS
+
+                START RETURN
+                    VAR T
+                END RETURN
             END METHOD
 
 

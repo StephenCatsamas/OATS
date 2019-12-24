@@ -26,13 +26,20 @@ for i, char in enumerate(src):
 leaf = AST
 
 types = ["INT", "STRING", "VOID", "BASIC"]
-funcs = ["IS", "SET"]
+funcs = ["IS", "SET", "return"]
 
 for line in srcLines:
     print("newline: ", end="")
     print(line)
 
     try:
+        if line[1] == "RETURN":
+            if line[0] == "START":
+                leaf = leaf.add_child("ctrl", "return")
+            if line[0] == "END":
+                leaf = leaf.ascend()
+                continue
+
         if line[0] == "TYPE":
             leaf = leaf.add_child("def", "type")
             leaf.add_child("func", line[1])
@@ -51,7 +58,7 @@ for line in srcLines:
 
         if leaf.ascend()[0].name == "__init__":
             if line[0] in types:
-                leaf = leaf.add_child("op", "set")
+                leaf = leaf.add_child("op", "SET")
                 leaf.add_child("var", line[1])
                 leaf.add_child("func", line[0])
                 leaf = leaf.ascend()
@@ -96,10 +103,15 @@ for line in srcLines:
                 leaf = leaf.ascend(2)
                 continue
 
-        if line[0] in types:
+        if line[0] == "FUNC":
             if line[1] in funcs:
                 leaf = leaf.add_child("func", line[1])
                 continue
+        if line[0] == "VAR":
+            #if line[1] in vars
+            leaf.add_child("var", line[1])
+            continue
+
 
     except IndexError:
         pass
