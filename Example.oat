@@ -1,17 +1,48 @@
-type int {
-    prop{
-    int i
-    string j
-    }
+TYPE TYPO
 
-    func{
+    START PROPS
+        INT I
+        STRING J
+    END PROPS
 
-    void make(basic a, basic b){
-        is(basic  a, basic b)
+    START FUNCS
 
-        }
-    }
-}
+        VOID MAKE
+            START ARGS
+                BASIC A
+                BASIC B
+            END ARGS
+            START METHOD
+                VOID SET
+                START ARGS
+                    BASIC Q
+                    BASIC IS
+                        START ARGS
+                            BASIC T
+                            BASIC B
+                        END ARGS
+                END ARGS
+            END METHOD
 
-code {text}
- 
+        VOID AGAIN
+            START ARGS
+                BASIC A
+                BASIC B
+            END ARGS
+            START METHOD
+                VOID SET
+                START ARGS
+                    BASIC Q
+                    BASIC IS
+                        START ARGS
+                            BASIC T
+                            BASIC B
+                        END ARGS
+                END ARGS
+            END METHOD
+
+
+    END FUNCS
+
+END TYPE
+

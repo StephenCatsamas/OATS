@@ -1,7 +1,14 @@
-class myclass():
-        def fuction(self):
-            print(6)
+print("abcdegs")
 
-j = myclass ()
 
-j.fuction ()
+for i in range(10):
+    print(i)
+    try:
+        if i > 5:
+            print("here")
+            if i == 7:
+                print("hereio")
+                continue
+    except ValueError:
+        pass
+    print("er")

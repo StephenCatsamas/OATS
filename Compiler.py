@@ -1,6 +1,10 @@
 class AST:
     printDepth = 0
 
+    def __repr__(self):
+        strn = str(self.key) + ": " + str(self.name)
+        return strn
+
     def __str__(self):
         strn = str(self.key) + ": " + str(self.name)
         return strn
@@ -53,6 +57,7 @@ class ASTinterpreter:
     def __init__(self, AST):
         self.tab = 0
         self.AST = AST
+        self.newline = False
 
     def print_ast(self, branch):
         stk = self.print_stack(branch)
@@ -70,48 +75,40 @@ class ASTinterpreter:
             return stk
 
         if branch.key == "def":
-            if branch.name == "classfunc":
+            if branch.name == "typefunc":
                 for leaf in branch:
-                    stk,append(lead)
+                    stk.append(leaf)
                 return stk
             if branch.name == "func":
                 stk.append(AST("synt", "def "))
                 stk.append(branch[0])
-                stk.append(AST("synt", ": \n"))
+                stk.append(AST("synt", ":"))
+                stk.append(AST("synt", "\n"))
                 stk.append(branch[1])
                 return stk
             if branch.name == "prop":
                 stk.append(AST("synt", "def "))
                 stk.append(branch[0])
-                stk.append(AST("synt", ": \n"))
+                stk.append(AST("synt", ":"))
+                stk.append(AST("synt", "\n"))
                 stk.append(branch[1])
                 return stk
-            if branch.name == "class":
+            if branch.name == "type":
                 stk.append(AST("synt", "class "))
                 stk.append(branch[0])
-                stk.append(AST("synt", ": \n"))
-                stk.append(branch[1])
-                return stk
-
-        if branch.key == "op":
-            if branch.name == "set":
-                stk.append(branch[0])
-                stk.append(branch)
-                stk.append(branch[1])
+                stk.append(AST("synt", ":"))
                 stk.append(AST("synt", "\n"))
-                return stk
-
-            if branch.name in ["in", "is"]:
-                stk.append(branch[0])
-                stk.append(branch)
                 stk.append(branch[1])
                 return stk
+
+
 
         if branch.key == "ctrl":
             if branch.name in ["for", "if", "while"]:
                 stk.append(branch)
                 stk.append(branch[0])
-                stk.append(AST("synt", ": \n"))
+                stk.append(AST("synt", ":"))
+                stk.append(AST("synt", "\n"))
                 stk.append(branch[1])
                 return stk
             if branch.name == "return":
@@ -128,27 +125,46 @@ class ASTinterpreter:
                 return stk
 
         if branch.key == "func":
-            pop = False
-            stk.append(branch)
-            stk.append(AST("synt", "("))
-            for leaf in branch:
-                stk.append(leaf)
-                stk.append(AST("synt", ","))
-                pop = True
-            if pop:
-                stk.pop()
+            if branch.name == "is":
+                branch.key = "op"
+            elif branch.name == "set":
+                branch.key = "op"
+            else:
                 pop = False
-            stk.append(AST("synt", ")"))
-            return stk
+                stk.append(branch)
+                stk.append(AST("synt", "("))
+                for leaf in branch:
+                    stk.append(leaf)
+                    stk.append(AST("synt", ","))
+                    pop = True
+                if pop:
+                    stk.pop()
+
+                stk.append(AST("synt", ")"))
+                return stk
 
         if branch.key == "block":
             stk.append(AST("tab", "lvp"))
             for leaf in branch:
-                stk.append(AST("tab", "do"))
                 stk.append(leaf)
-                stk.append(AST("synt", "\n"))
+            stk.append(AST("synt", "\n"))
             stk.append(AST("tab", "lvm"))
             return stk
+
+        if branch.key == "op":
+            if branch.name == "set":
+                stk.append(branch[0])
+                stk.append(branch)
+                stk.append(branch[1])
+                stk.append(AST("synt", "\n"))
+                return stk
+
+            if branch.name in ["in", "is"]:
+                stk.append(branch[0])
+                stk.append(branch)
+                stk.append(branch[1])
+                return stk
+
 
         stk.append(branch)
         return stk
@@ -156,19 +172,33 @@ class ASTinterpreter:
     def do_print(self, branch):
         if branch.key == "block":
             return
+
         if branch.key == "tab":
             if branch.name == "lvp":
                 self.tab += 1
+
             if branch.name == "lvm":
                 self.tab -= 1
-            if branch.name == "do":
-                for i in range(self.tab):
-                    print("    ", end="")
+
+            for i in range(self.tab):
+                print("    ", end="")
+            self.newline = False
+
             return
 
         if branch.key == "synt":
+            if branch.name == "\n":
+                print("\n")
+                self.newline = True
+                return
             print(self.get_print(branch), end="")
             return
+
+        if self.newline:
+            for i in range(self.tab):
+                print("    ", end="")
+            self.newline = False
+
         print(self.get_print(branch), end=" ")
 
     def get_print(self, branch):
@@ -195,8 +225,8 @@ class ASTinterpreter:
 
 
 # root = AST("root")
-#
-# leaf = root.add_child("op", "set")
+# leaf = root.add_child("block")
+# leaf = leaf.add_child("op", "set")
 # leaf.add_child("var", "i")
 # leaf.add_child("basic", "0")
 # leaf = leaf.ascend()
@@ -227,7 +257,7 @@ class ASTinterpreter:
 # leaf = leaf.ascend()
 # leaf.add_child("ctrl", "break")
 # leaf = leaf.ascend(2)
-# leaf = leaf.add_child("def", "class")
+# leaf = leaf.add_child("def", "type")
 # leaf.add_child("func", "thisfunc")
 # leaf = leaf.add_child("block")
 # leaf.add_child("var", "i")
