@@ -1,4 +1,4 @@
-class Oint():
+class INT():
 
     def __init__(self):
         self.i = 0

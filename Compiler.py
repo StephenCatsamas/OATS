@@ -10,7 +10,11 @@ class AST:
         return strn
 
     def __getitem__(self, key):
-        return self.leaves[key]
+        try:
+            leaf = self.leaves[key]
+        except IndexError:
+            leaf = AST("None")
+        return leaf
 
     def __iter__(self):
         return iter(self.leaves)
@@ -22,14 +26,14 @@ class AST:
         self.leaves = list()
         self.branch = branch
 
-    def print_children(self):
+    def print_leaves(self):
         for leaf in self.leaves:
             for i in range(self.printDepth):
                 print("  ", end="")
             print("--", leaf)
 
             AST.printDepth += 1
-            leaf.print_children()
+            leaf.print_leaves()
             AST.printDepth -= 1
 
     def ascend(self, lv = 1):
@@ -41,9 +45,7 @@ class AST:
             return self.branch
 
 
-
-
-    def add_child(self, key, name=None):
+    def add_leaf(self, key, name=None):
         leaf = AST(key, name, self)
         self.leaves.append(leaf)
         return self.leaves[-1]
@@ -53,6 +55,8 @@ class AST:
 
 
 class ASTinterpreter:
+
+    easterEgg = "Chistmass"
 
     def __init__(self, AST):
         self.tab = 0
@@ -199,7 +203,7 @@ class ASTinterpreter:
                 print("    ", end="")
             self.newline = False
 
-        print(self.get_print(branch).lower(), end=" ")
+        print(self.get_print(branch), end=" ")
 
     def get_print(self, branch):
         if branch.key == "op":

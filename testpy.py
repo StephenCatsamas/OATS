@@ -4,22 +4,21 @@ from builtIn import *
 class pair():
 
     def __init__(self):
-        self.i = Oint()
+        self.i = INT()
 
-        self.j = Oint()
+        self.j = INT()
 
     def make(self, a, b):
         self.i = a
-
         self.j = b
 
         return (self)
 
-    @staticmethod
-    def add(self, a, b):
-        self.i = Oint.add(a.i, b.i)
 
-        self.j = Oint.add(a.j, b.j)
+    def add(self, a, b):
+        self.i = INT().add(a.i, b.i)
+
+        self.j = INT().add(a.j, b.j)
 
         return (self)
 
@@ -34,3 +33,9 @@ p.add(p,t)
 
 print(p.i)
 print(p.j)
+
+
+def func(a):
+    print(a)
+
+__main__.func(4)

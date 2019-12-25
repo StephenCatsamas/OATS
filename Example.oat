@@ -1,9 +1,9 @@
 TYPE PAIR
 
-    START PROPS
+    START VARS
         INT self.I
         INT self.J
-    END PROPS
+    END VARS
 
     START FUNCS
 
@@ -25,7 +25,7 @@ TYPE PAIR
                 END ARGS
 
                 START RETURN
-                VAR SELF
+                VAR self
                 END RETURN
            END METHOD
 
@@ -57,7 +57,7 @@ TYPE PAIR
                 END ARGS
 
                 START RETURN
-                    VAR SELF
+                    VAR self
                 END RETURN
 
             END METHOD
@@ -67,3 +67,8 @@ TYPE PAIR
 
 END TYPE
 
+FUNC SET
+START ARGS
+VAR A
+VAR B
+END ARGS
