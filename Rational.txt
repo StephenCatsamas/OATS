@@ -4,8 +4,7 @@ My thinking is that everything will be an object built out of other objects or t
 
 I think the code will be cross complied into python, that seems to be the easiest way to implement this language.
 
-
-Syntax is going to be very pythonic, though I want static typing.
+I feel like I'll compile this down to C++ now not python so much of this needs to be redone.
 
 Object Archetecture:
 
