@@ -1,74 +1,35 @@
-TYPE PAIR
-
-    START VARS
-        INT self.I
-        INT self.J
-    END VARS
-
-    START FUNCS
-
-        PAIR MAKE
-            START ARGS
-                INT A
-                INT B
-            END ARGS
-            START METHOD
-                FUNC SET
-                START ARGS
-                    VAR self.I
-                    VAR A
-                END ARGS
-                FUNC SET
-                START ARGS
-                    VAR self.J
-                    VAR B
-                END ARGS
-
-                START RETURN
-                VAR self
-                END RETURN
-           END METHOD
-
-        PAIR ADD
-            START ARGS
-                PAIR A
-                PAIR B
-            END ARGS
-            START METHOD
-
-                FUNC SET
-                START ARGS
-                    VAR self.I
-                    FUNC ADD
-                        START ARGS
-                            VAR A.I
-                            VAR B.I
-                        END ARGS
-                END ARGS
-
-                FUNC SET
-                START ARGS
-                    VAR self.J
-                    FUNC ADD
-                        START ARGS
-                            VAR A.J
-                            VAR B.J
-                        END ARGS
-                END ARGS
-
-                START RETURN
-                    VAR self
-                END RETURN
-
-            END METHOD
+START PAIR
+	START VARS
+		INT A
+		INT B
+	CLOSE (VARS)
+	START METHODS
+		START GET_FIRST
+			START ARGS
+			CLOSE (ARGS)
+			START METHOD
+				RETURN A
+			CLOSE (METHOD)
+		CLOSE (GET_FIRST)
+		
+		START GET_SECOND
+			START ARGS
+			CLOSE (ARGS)
+			START METHOD
+				RETURN B
+			CLOSE (METHOD)
+		CLOSE (GET_FIRST)
+		
+		START ADD
+			START ARGS
+				PAIR P
+			CLOSE (ARGS)
+			START METHOD
+				SET I P.GET_FIRST
+		
+	CLOSE (METHODS)
+CLOSE (PAIR)
 
 
-    END FUNCS
-
-END TYPE
-
-FUNC SET
-START ARGS
-VAR A
-VAR B
-END ARGS
+//types have variables and methods. methods update the variables of only the object instance they are run from
+//all variables are public and can be accessed from another object
